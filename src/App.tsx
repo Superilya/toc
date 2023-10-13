@@ -1,25 +1,30 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from 'react';
+import { ThemeProvider } from 'styled-components';
+import { ScrollContainer } from './components/ScrollContainer';
+import { Toc } from './components/Toc';
+import { useTocData } from './hooks/tocData';
+
+const theme = {
+  fg: "#BF4F74",
+  bg: "white"
+};
 
 function App() {
+  const { state, start } = useTocData();
+
+  console.log('statestatestate', JSON.stringify(state, null, 2));
+
+  useEffect(() => {
+    console.log('gg');
+    start();
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider theme={theme}>
+      <ScrollContainer>
+        <Toc pages={state.data.pages} topLevelIds={state.data.topLevelIds}/>
+      </ScrollContainer>
+    </ThemeProvider>
   );
 }
 
