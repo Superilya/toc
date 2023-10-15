@@ -1,38 +1,75 @@
-import { useState } from 'react';
-import { Page } from '../../hooks/tocData';
-import { TocItemLabel } from './styles';
+import { useMemo, memo } from "react";
+import { Transition } from "react-transition-group";
+import { useTocItemData } from "../../hooks/tocData";
+import { TocItemLabel, TocItemChildren, TocItemChildrenOffset } from "./styles";
 
-const getPageById = (pageId: string, pages: Record<Page['id'], Page>) => {
-    return pages[pageId];
-}
+type Props = {
+  pathTail?: string[];
+  pageId: string;
+};
 
-export const TocItem = (props: { pageId: Page['id'], pages: Record<Page['id'], Page> }) => {
-    const [isOpen, setOpen] = useState(false);
-    const page = getPageById(props.pageId, props.pages);
+export const TocItem = memo(({ pageId, pathTail = [] }: Props) => {
+  const {
+    isActive,
+    page,
+    setActivePageByTail,
+    setActiveTail,
+    setActivePage,
+    isOpen,
+  } = useTocItemData(pageId);
+  const nextPathTail = useMemo(() => {
+    return pathTail.concat(pageId);
+  }, [pathTail, pageId]);
 
-    console.log('props.pagesprops.pagesprops.pages', props.pages);
+  if (!page) {
+    return null;
+  }
 
-    if (!page) {
-        return null;
+  const hasChildren = Array.isArray(page.pages);
+  const handleClick = () => {
+    if (hasChildren && isOpen && isActive) {
+      setActiveTail(pathTail);
+
+      return;
     }
 
-    return (
-        <div>
-            <TocItemLabel
-                onClick={() => setOpen(!isOpen)}
-                isOpen={isOpen}
-                hasChildren={Boolean(page.pages)}
-                isActive={false}
-            >
-                {page.title}
-            </TocItemLabel>
-            { isOpen && props.pages && (
-                <div style={{ marginLeft: '16px' }}>
-                    {page.pages.map((id) => (
-                        <TocItem pageId={id} pages={props.pages} />
-                    ))}
-                </div>
+    if (isOpen) {
+      setActiveTail(pathTail);
+      setActivePage(pageId);
+
+      return;
+    }
+
+    setActivePageByTail(nextPathTail);
+  };
+
+  return (
+    <div>
+      <TocItemLabel
+        onClick={handleClick}
+        isOpen={isOpen}
+        hasChildren={hasChildren}
+        isActive={isActive}
+        offset={nextPathTail.length}
+      >
+        {page.title}
+      </TocItemLabel>
+      {Array.isArray(page.pages) && (
+        <TocItemChildrenOffset isOpen={isOpen}>
+          <Transition in={isOpen} timeout={500}>
+            {(state) => (
+              <TocItemChildren state={state}>
+                {(state === "entered" ||
+                  state === "entering" ||
+                  state === "exiting") &&
+                  page.pages.map((id) => (
+                    <TocItem key={id} pageId={id} pathTail={nextPathTail} />
+                  ))}
+              </TocItemChildren>
             )}
-        </div>
-    )
-}
+          </Transition>
+        </TocItemChildrenOffset>
+      )}
+    </div>
+  );
+});

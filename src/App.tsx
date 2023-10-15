@@ -1,28 +1,52 @@
-import React, { useEffect } from 'react';
-import { ThemeProvider } from 'styled-components';
-import { ScrollContainer } from './components/ScrollContainer';
-import { Toc } from './components/Toc';
-import { useTocData } from './hooks/tocData';
+import React, { useState } from "react";
+import { ThemeProvider, DefaultTheme } from "styled-components";
+import { ScrollContainer } from "./components/ScrollContainer";
+import { Toc } from "./components/Toc";
+import { AppStyles } from "./styles";
 
-const theme = {
-  fg: "#BF4F74",
-  bg: "white"
+const lightTheme: DefaultTheme = {
+  app: {
+    backgroundColor: "transparent",
+  },
+  toc: {
+    color: "rgb(25, 25, 28)",
+    activeColor: "white",
+    activeBackgroundColor: "#6B57FF",
+    openBackgroundColor: "rgb(0,0,0, 0.025)",
+  },
+};
+
+const darkTheme: DefaultTheme = {
+  app: {
+    backgroundColor: "#19191C",
+  },
+  toc: {
+    color: "white",
+    activeColor: "white",
+    activeBackgroundColor: "#6B57FF",
+    openBackgroundColor: "rgb(255,255,255, 0.025)",
+  },
 };
 
 function App() {
-  const { state, start } = useTocData();
+  const [theme, setTheme] = useState(lightTheme);
+  const handleChange = () => {
+    setTheme(theme === lightTheme ? darkTheme : lightTheme);
+  };
 
-  console.log('statestatestate', JSON.stringify(state, null, 2));
+  const tocPageId = window.location.pathname.slice(1) || undefined;
 
-  useEffect(() => {
-    console.log('gg');
-    start();
-  }, []);
+  console.log("tocPageIdtocPageIdtocPageId", tocPageId);
 
   return (
     <ThemeProvider theme={theme}>
+      <AppStyles />
+      <div>
+        <input type="checkbox" onChange={handleChange} />
+        <label>dark theme</label>
+      </div>
       <ScrollContainer>
-        <Toc pages={state.data.pages} topLevelIds={state.data.topLevelIds}/>
+        <Toc activePage={tocPageId} />
       </ScrollContainer>
     </ThemeProvider>
   );
