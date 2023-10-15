@@ -7,6 +7,7 @@ export type State = {
     pages: Record<Page["id"], Page>;
     topLevelIds: Array<Page["id"]>;
   };
+  filtredIds?: Array<Page["id"]>;
   activePageTail?: Array<Page["id"]>;
   activePage?: Page["id"];
   isLoading: boolean;
@@ -46,6 +47,12 @@ export const tocSlice = createSlice({
     setActivePage: (state, action: PayloadAction<Page["id"]>) => {
       state.activePage = action.payload;
     },
+    setFiltredIds: (
+      state,
+      action: PayloadAction<Array<Page["id"]> | undefined>,
+    ) => {
+      state.filtredIds = action.payload;
+    },
   },
 });
 
@@ -56,4 +63,5 @@ export type Action = ReturnType<
   | (typeof tocSlice)["actions"]["setActivePage"]
   | (typeof tocSlice)["actions"]["setActiveTail"]
   | (typeof tocSlice)["actions"]["setActivePageByTail"]
+  | (typeof tocSlice)["actions"]["setFiltredIds"]
 >;

@@ -88,7 +88,7 @@ export const useTocData = (activePage?: Page["id"]) => {
   return {
     state,
     dispatch,
-    topLevelIds: state.payload?.topLevelIds,
+    topLevelIds: state.filtredIds || state.payload?.topLevelIds,
     isLoading: state.isLoading,
   };
 };
@@ -115,5 +115,31 @@ export const useTocItemData = (pageId: Page["id"]) => {
     setActiveTail: (activePageTail: string[]) => {
       dispatch(tocSlice.actions.setActiveTail(activePageTail));
     },
+  };
+};
+
+export const useTocFilterData = () => {
+  const { state, dispatch } = useContext(TocContext);
+
+  return {
+    setFilter: useCallback(
+      (text: string) => {
+        const pages = state.payload?.pages;
+
+        if (!pages || !text) {
+          dispatch(tocSlice.actions.setFiltredIds());
+
+          return;
+        }
+
+        // TODO merge included pages
+        const filtredIds = Object.values(pages)
+          .filter(({ title }) => title.includes(text))
+          .map(({ id }) => id);
+
+        dispatch(tocSlice.actions.setFiltredIds(filtredIds));
+      },
+      [dispatch, state.payload?.pages],
+    ),
   };
 };
