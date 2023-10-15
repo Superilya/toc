@@ -1,6 +1,6 @@
 import { useMemo, memo } from "react";
 import { Transition } from "react-transition-group";
-import { useTocItemData } from "../../hooks/tocData";
+import { useTocItemData } from "../../hooks/toc";
 import { TocItemLabel, TocItemChildren, TocItemChildrenOffset } from "./styles";
 
 type Props = {
@@ -47,18 +47,18 @@ export const TocItem = memo(({ pageId, pathTail = [] }: Props) => {
     <div>
       <TocItemLabel
         onClick={handleClick}
-        isOpen={isOpen}
-        hasChildren={hasChildren}
-        isActive={isActive}
-        offset={nextPathTail.length}
+        $isOpen={isOpen}
+        $hasChildren={hasChildren}
+        $isActive={isActive}
+        $offset={nextPathTail.length}
       >
         {page.title}
       </TocItemLabel>
       {Array.isArray(page.pages) && (
-        <TocItemChildrenOffset isOpen={isOpen}>
+        <TocItemChildrenOffset $isOpen={isOpen}>
           <Transition in={isOpen} timeout={500}>
             {(state) => (
-              <TocItemChildren state={state}>
+              <TocItemChildren $state={state}>
                 {(state === "entered" ||
                   state === "entering" ||
                   state === "exiting") &&

@@ -1,27 +1,18 @@
-import { useTocData, TocContext } from "../../hooks/tocData";
+import { useTocData } from "../../hooks/toc";
+import { TocContextProvider } from "../../contexts/toc";
 import { Page } from "../../types/api";
-import { TocFilter } from "../TocFilter";
-import { TocItem } from "../TocItem";
+import { TocView } from "../TocView";
 
 type Props = {
   activePage?: Page["id"];
 };
 
 export const Toc = ({ activePage }: Props) => {
-  const { isLoading, topLevelIds, state, dispatch } = useTocData(activePage);
+  const { state, dispatch } = useTocData(activePage);
 
   return (
-    <TocContext.Provider value={{ state, dispatch }}>
-      {isLoading && <div>Loading</div>}
-      {!isLoading && (
-        <>
-          <TocFilter />
-          {Array.isArray(topLevelIds) &&
-            topLevelIds.map((pageId) => (
-              <TocItem key={pageId} pageId={pageId} />
-            ))}
-        </>
-      )}
-    </TocContext.Provider>
+    <TocContextProvider value={{ state, dispatch }}>
+      <TocView />
+    </TocContextProvider>
   );
 };

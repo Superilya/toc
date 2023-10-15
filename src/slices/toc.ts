@@ -14,13 +14,13 @@ export type State = {
   isError: boolean;
 };
 
-const initialState: State = {
+export const initialState: State = {
   isLoading: false,
   isError: false,
 };
 
 export const tocSlice = createSlice({
-  name: "counter",
+  name: "toc",
   initialState,
   reducers: {
     fetchStart: (state) => {

@@ -1,6 +1,6 @@
 import { useState, ChangeEvent, useMemo } from "react";
 import debounce from "lodash/debounce";
-import { useTocFilterData } from "../../hooks/tocData";
+import { useTocFilterData } from "../../hooks/toc";
 
 export const TocFilter = () => {
   const [text, setText] = useState("");

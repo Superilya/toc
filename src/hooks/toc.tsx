@@ -1,12 +1,6 @@
-import {
-  useReducer,
-  createContext,
-  useContext,
-  Dispatch,
-  useEffect,
-  useCallback,
-} from "react";
-import { tocSlice, type State, type Action } from "../slices/toc";
+import { useReducer, useContext, useEffect, useCallback } from "react";
+import { TocContext } from "../contexts/toc";
+import { tocSlice } from "../slices/toc";
 import type { Page } from "../types/api";
 
 type ApiResponse = {
@@ -38,14 +32,6 @@ const getTailByPageId = (
 
   return result;
 };
-
-export const TocContext = createContext<{
-  state: State;
-  dispatch: Dispatch<Action>;
-}>({
-  state: tocSlice.getInitialState(),
-  dispatch: () => null,
-});
 
 export const useTocData = (activePage?: Page["id"]) => {
   const [state, dispatch] = useReducer(
@@ -88,6 +74,13 @@ export const useTocData = (activePage?: Page["id"]) => {
   return {
     state,
     dispatch,
+  };
+};
+
+export const useTocViewData = () => {
+  const { state } = useContext(TocContext);
+
+  return {
     topLevelIds: state.filtredIds || state.payload?.topLevelIds,
     isLoading: state.isLoading,
   };
@@ -134,7 +127,9 @@ export const useTocFilterData = () => {
 
         // TODO merge included pages
         const filtredIds = Object.values(pages)
-          .filter(({ title }) => title.includes(text))
+          .filter(({ title }) =>
+            title.toLocaleLowerCase().includes(text.toLocaleLowerCase()),
+          )
           .map(({ id }) => id);
 
         dispatch(tocSlice.actions.setFiltredIds(filtredIds));

@@ -49,8 +49,10 @@
   },
   "devDependencies": {
     "@types/lodash": "^4.14.199",
+    "@types/react-test-renderer": "^18.0.3",
     "@types/react-transition-group": "^4.4.7",
     "@types/styled-components": "^5.1.28",
-    "prettier": "3.0.3"
+    "prettier": "3.0.3",
+    "react-test-renderer": "^18.2.0"
   }
 }

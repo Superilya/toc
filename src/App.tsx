@@ -4,7 +4,7 @@ import { ScrollContainer } from "./components/ScrollContainer";
 import { Toc } from "./components/Toc";
 import { AppStyles } from "./styles";
 
-const lightTheme: DefaultTheme = {
+export const lightTheme: DefaultTheme = {
   app: {
     backgroundColor: "transparent",
   },
@@ -35,8 +35,6 @@ function App() {
   };
 
   const tocPageId = window.location.pathname.slice(1) || undefined;
-
-  console.log("tocPageIdtocPageIdtocPageId", tocPageId);
 
   return (
     <ThemeProvider theme={theme}>
