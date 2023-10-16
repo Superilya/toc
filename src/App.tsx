@@ -34,6 +34,7 @@ function App() {
     setTheme(theme === lightTheme ? darkTheme : lightTheme);
   };
 
+  // TODO sync store and history to handle push and back
   const tocPageId = window.location.pathname.slice(1) || undefined;
 
   return (
